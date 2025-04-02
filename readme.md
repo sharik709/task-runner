@@ -13,8 +13,14 @@ A flexible and extensible task processing system that allows you to schedule, ex
 
 ## Installation
 
+### From GitHub (Recommended)
 ```bash
-pip install task-processor
+pip install git+https://github.com/sharik709/task-processor.git
+```
+
+### From TestPyPI
+```bash
+pip install -i https://test.pypi.org/simple/ task-processor
 ```
 
 ## Quick Start
