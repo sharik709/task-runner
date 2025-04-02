@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "task-processor"
-version = "0.1.2"
+version = "0.1.4"
 description = "A flexible task scheduling and execution framework"
 readme = "README.md"
 license = { text = "MIT" }
@@ -50,6 +50,10 @@ dev = [
     "flake8>=7.0.0",
     "build>=1.0.0",
     "twine>=5.0.0",
+]
+
+mysql = [
+    "mysql-connector-python>=8.0.0",
 ]
 
 [tool.setuptools]

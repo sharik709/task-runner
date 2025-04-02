@@ -1,11 +1,12 @@
-import schedule
 import time
 from datetime import datetime, timedelta
 from typing import Dict, Optional
-from loguru import logger
-from models.task import Task
-from models.database import Database
+
+import schedule
 from executor.task_executor import TaskExecutor
+from loguru import logger
+from models.database import Database
+from models.task import Task
 
 
 class TaskScheduler:
@@ -103,17 +104,13 @@ class TaskScheduler:
                     .do(self._execute_task, task)
                 )
                 self.scheduled_tasks[task.name] = job
-                logger.info(
-                    f"Scheduled one-time task '{task.name}' for {task.start_time}"
-                )
+                logger.info(f"Scheduled one-time task '{task.name}' for {task.start_time}")
             else:
                 logger.warning(f"One-time task '{task.name}' start time is in the past")
         else:
             interval = self._parse_interval(task.schedule_interval)
             if interval:
-                job = schedule.every(interval.total_seconds()).seconds.do(
-                    self._execute_task, task
-                )
+                job = schedule.every(interval.total_seconds()).seconds.do(self._execute_task, task)
                 self.scheduled_tasks[task.name] = job
                 logger.info(
                     f"Scheduled recurring task '{task.name}' with interval {task.schedule_interval}"

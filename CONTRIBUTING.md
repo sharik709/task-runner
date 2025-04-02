@@ -85,7 +85,7 @@ Make sure all tests pass and maintain or improve the test coverage before submit
 4. Build and publish to PyPI:
    ```bash
    python -m build
-   python -m twine upload dist/*
+   python -m twine upload --repository-url https://test.pypi.org/legacy/ dist/*
    ```
 
 ## Questions?

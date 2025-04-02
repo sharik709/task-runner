@@ -2,8 +2,9 @@ import os
 from pathlib import Path
 from typing import List
 
-from task_processor.core.models import Task
 import yaml
+
+from task_processor.core.models import Task
 
 
 class ConfigLoader:

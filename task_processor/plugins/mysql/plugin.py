@@ -1,7 +1,15 @@
 from typing import Any, Dict, List, Optional
-import mysql.connector
-from mysql.connector import Error
+
+try:
+    import mysql.connector
+    from mysql.connector import Error
+
+    MYSQL_AVAILABLE = True
+except ImportError:
+    MYSQL_AVAILABLE = False
+
 from pydantic import BaseModel, Field
+
 from ..base import BasePlugin, PluginConfig
 
 
@@ -14,13 +22,18 @@ class MySQLConfig(PluginConfig):
     password: str = Field(..., description="MySQL password")
     database: str = Field(..., description="MySQL database name")
     pool_size: int = Field(5, description="Connection pool size")
-    pool_name: str = Field("task_runner_pool", description="Connection pool name")
+    pool_name: str = Field("task_processor_pool", description="Connection pool name")
 
 
 class MySQLPlugin(BasePlugin):
     """MySQL plugin for database operations"""
 
     def __init__(self, config: MySQLConfig):
+        if not MYSQL_AVAILABLE:
+            raise ImportError(
+                "mysql-connector-python package is required for MySQL support. "
+                "Install it with 'pip install task-processor[mysql]'"
+            )
         super().__init__(config)
         self._connection = None
         self._pool = None
@@ -54,9 +67,7 @@ class MySQLPlugin(BasePlugin):
             raise RuntimeError("MySQL plugin not initialized")
         return self._pool.get_connection()
 
-    def execute_query(
-        self, query: str, params: Optional[List[Any]] = None
-    ) -> List[Dict[str, Any]]:
+    def execute_query(self, query: str, params: Optional[List[Any]] = None) -> List[Dict[str, Any]]:
         """Execute a SELECT query and return results"""
         with self.get_connection() as conn:
             with conn.cursor(dictionary=True) as cursor:

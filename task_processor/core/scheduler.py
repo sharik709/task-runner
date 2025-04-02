@@ -1,11 +1,12 @@
-import schedule
 import time
 from datetime import datetime
 from typing import Dict, List, Optional
 
-from task_processor.utils.logging import LogManager, LogConfig
+import schedule
+
 from task_processor.core.executor import TaskExecutor
 from task_processor.core.models import Task
+from task_processor.utils.logging import LogConfig, LogManager
 
 
 class TaskScheduler:
@@ -38,7 +39,9 @@ class TaskScheduler:
                 years = int(interval[:-1])
                 self.schedule.every(years * 365).days.do(self.executor.execute_task, task)
         elif task.schedule.type == "one-time" and task.schedule.start_time:
-            self.schedule.every().day.at(task.schedule.start_time.strftime("%H:%M")).do(self.executor.execute_task, task)
+            self.schedule.every().day.at(task.schedule.start_time.strftime("%H:%M")).do(
+                self.executor.execute_task, task
+            )
 
     def add_tasks(self, tasks: List[Task]) -> None:
         """Add multiple tasks to the scheduler."""

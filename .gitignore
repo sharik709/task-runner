@@ -25,6 +25,7 @@ venv/
 ENV/
 env/
 .env
+.venv/
 
 # IDE
 .idea/
@@ -42,8 +43,15 @@ logs/
 .coverage
 coverage.xml
 htmlcov/
+.pytest_cache/
 
 # Distribution
 dist/
 build/
 *.egg-info/
+
+# mypy
+.mypy_cache/
+
+# flake8
+.flake8

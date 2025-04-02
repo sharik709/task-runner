@@ -1,6 +1,7 @@
-from pydantic import BaseModel, Field
-from typing import List, Optional
 from datetime import datetime
+from typing import List, Optional
+
+from pydantic import BaseModel, Field
 
 
 class ScheduleConfig(BaseModel):
@@ -8,9 +9,7 @@ class ScheduleConfig(BaseModel):
     interval: Optional[str] = Field(
         None, description="Interval for recurring tasks (e.g., '1h', '1d')"
     )
-    start_time: Optional[datetime] = Field(
-        None, description="Start time for one-time tasks"
-    )
+    start_time: Optional[datetime] = Field(None, description="Start time for one-time tasks")
 
 
 class RetryConfig(BaseModel):

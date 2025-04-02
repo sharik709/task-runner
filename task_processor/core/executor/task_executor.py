@@ -1,9 +1,10 @@
+import os
 import subprocess
 import time
 from datetime import datetime
-from loguru import logger
-import os
 from typing import Optional
+
+from loguru import logger
 
 
 class TaskExecutor:
@@ -71,21 +72,15 @@ class TaskExecutor:
                     logger.success(f"Task '{self.task_name}' completed successfully")
                     return True
                 else:
-                    logger.error(
-                        f"Task '{self.task_name}' failed with return code {return_code}"
-                    )
+                    logger.error(f"Task '{self.task_name}' failed with return code {return_code}")
 
             except Exception as e:
                 logger.exception(f"Error executing task '{self.task_name}': {str(e)}")
 
             # If we get here, the task failed
             if attempt < self.retry_max_attempts:
-                logger.warning(
-                    f"Retrying task '{self.task_name}' in {self.retry_delay} seconds..."
-                )
+                logger.warning(f"Retrying task '{self.task_name}' in {self.retry_delay} seconds...")
                 time.sleep(self.retry_delay)
 
-        logger.error(
-            f"Task '{self.task_name}' failed after {self.retry_max_attempts} attempts"
-        )
+        logger.error(f"Task '{self.task_name}' failed after {self.retry_max_attempts} attempts")
         return False

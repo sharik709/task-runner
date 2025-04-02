@@ -1,9 +1,9 @@
 import subprocess
-from typing import Optional
 import time
+from typing import Optional
 
 from task_processor.core.models import Task
-from task_processor.utils.logging import LogManager, LogConfig
+from task_processor.utils.logging import LogConfig, LogManager
 
 
 class TaskExecutor:

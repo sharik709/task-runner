@@ -1,17 +1,17 @@
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 setup(
     name="task-processor",
-    version="0.1.0",
+    version="0.1.4",
     author="Sharik Shaikh",
     author_email="shaikhsharik709@gmail.com",
-    description="A powerful yet simple task runner for scheduling and automating tasks",
+    description="A powerful yet simple task processor for scheduling and automating tasks",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/sharik709/task-runner",
+    url="https://github.com/sharik709/task-processor",
     packages=find_packages(),
     classifiers=[
         "Development Status :: 4 - Beta",
@@ -23,30 +23,31 @@ setup(
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
         "Programming Language :: Python :: 3.11",
+        "Programming Language :: Python :: 3.12",
+        "Programming Language :: Python :: 3.13",
     ],
     python_requires=">=3.8",
     install_requires=[
         "pydantic>=2.0.0",
-        "pyyaml>=6.0.0",
         "schedule>=1.2.0",
-        "python-dateutil>=2.8.2",
-        "typing-extensions>=4.5.0",
+        "loguru>=0.7.0",
     ],
     extras_require={
         "dev": [
-            "pytest>=7.0.0",
-            "pytest-cov>=4.0.0",
-            "black>=23.0.0",
-            "isort>=5.12.0",
-            "mypy>=1.0.0",
-            "flake8>=6.0.0",
+            "pytest>=8.0.0",
+            "pytest-cov>=5.0.0",
+            "black>=24.0.0",
+            "isort>=5.13.0",
+            "mypy>=1.9.0",
+            "flake8>=7.0.0",
             "build>=1.0.0",
-            "twine>=4.0.0",
+            "twine>=5.0.0",
         ],
+        "mysql": ["mysql-connector-python>=8.0.0"],
     },
     entry_points={
         "console_scripts": [
-            "task-runner=task_runner.__main__:main",
+            "task-processor=task_processor.__main__:main",
         ],
     },
 )

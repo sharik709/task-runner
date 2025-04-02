@@ -69,6 +69,64 @@ Options:
   --help              Show this message and exit
 ```
 
+### Python API Usage
+
+You can also use the task-processor directly in your Python code:
+
+```python
+from datetime import datetime
+from task_processor import Task, Schedule, RetryConfig, TaskScheduler, LogManager, LogConfig
+
+# Initialize logging (optional but recommended)
+log_config = LogConfig(log_dir="./logs")
+log_manager = LogManager(log_config)
+
+# Create a task scheduler with logging
+scheduler = TaskScheduler(log_manager=log_manager)
+
+# Define a recurring task
+recurring_task = Task(
+    name="data_processing",
+    command="python process_data.py",
+    schedule=Schedule(
+        type="recurring",
+        interval="1h"  # Run every hour
+    ),
+    retry=RetryConfig(
+        max_attempts=3,
+        delay=60  # Retry after 60 seconds
+    )
+)
+
+# Define a one-time task
+one_time_task = Task(
+    name="database_cleanup",
+    command="python cleanup_db.py",
+    schedule=Schedule(
+        type="one-time",
+        start_time=datetime(2024, 5, 1, 3, 0, 0)  # Run at 3 AM on May 1, 2024
+    ),
+    retry=RetryConfig(
+        max_attempts=2,
+        delay=300  # Retry after 5 minutes
+    )
+)
+
+# Add tasks to the scheduler
+scheduler.add_task(recurring_task)
+scheduler.add_task(one_time_task)
+
+# Start the scheduler (this will block and run until stopped)
+try:
+    print("Task scheduler is running. Press Ctrl+C to stop.")
+    scheduler.run()
+except KeyboardInterrupt:
+    print("Shutting down scheduler...")
+    scheduler.stop()
+```
+
+For a complete working example, see [example_task_processor.py](example_task_processor.py).
+
 ## Development
 
 ### Setup

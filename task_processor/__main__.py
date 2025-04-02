@@ -1,11 +1,14 @@
 import argparse
 import sys
 from pathlib import Path
-from task_processor import TaskScheduler, ConfigLoader, LogManager, LogConfig
+
+from task_processor import ConfigLoader, LogConfig, LogManager, TaskScheduler
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Task Processor - A flexible task processing system")
+    parser = argparse.ArgumentParser(
+        description="Task Processor - A flexible task processing system"
+    )
     parser.add_argument(
         "--config-dir",
         type=str,

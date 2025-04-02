@@ -1,16 +1,18 @@
 import os
+import sys
 import time
+from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Optional, Dict
+from typing import Dict, Optional
+
 from loguru import logger
 from pydantic import BaseModel, Field
-from dataclasses import dataclass
-import sys
 
 
 class LogConfig(BaseModel):
     """Configuration for logging."""
+
     log_dir: str = Field(default="~/.task_processor/logs")
     max_files: int = Field(default=10)
     rotation: str = Field(default="1 day")
@@ -32,9 +34,7 @@ class TaskLogger:
 
         # Configure task-specific logger
         self.logger = logger.bind(task=task_name)
-        log_file = (
-            self.log_dir / f"{task_name}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.log"
-        )
+        log_file = self.log_dir / f"{task_name}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.log"
         self.logger.add(
             str(log_file),
             rotation=config.rotation,
@@ -65,9 +65,7 @@ class TaskLogger:
 
     def cleanup_old_logs(self):
         """Remove old log files if we exceed max_files"""
-        log_files = sorted(
-            self.log_dir.glob("*.log"), key=os.path.getctime, reverse=True
-        )
+        log_files = sorted(self.log_dir.glob("*.log"), key=os.path.getctime, reverse=True)
         for log_file in log_files[self.config.max_files :]:
             log_file.unlink()
 
@@ -88,12 +86,7 @@ class LogManager:
         logger.remove()
 
         # Add console handler
-        logger.add(
-            sys.stderr,
-            format=self.config.format,
-            level="INFO",
-            colorize=True
-        )
+        logger.add(sys.stderr, format=self.config.format, level="INFO", colorize=True)
 
         # Add file handler
         log_file = self.log_dir / "task_processor.log"
@@ -103,7 +96,7 @@ class LogManager:
             level="DEBUG",
             rotation=self.config.rotation,
             retention=self.config.retention,
-            compression=self.config.compression
+            compression=self.config.compression,
         )
 
     def get_log_file(self, task_name: str) -> Path:
@@ -120,7 +113,7 @@ class LogManager:
             rotation=self.config.rotation,
             retention=self.config.retention,
             compression=self.config.compression,
-            filter=lambda record: record["extra"].get("task_name") == task_name
+            filter=lambda record: record["extra"].get("task_name") == task_name,
         )
 
     def get_logger(self, task_name: str) -> TaskLogger:
@@ -134,7 +127,7 @@ class LogManager:
                 rotation=self.config.rotation,
                 retention=self.config.retention,
                 compression=self.config.compression,
-                filter=lambda record: record["extra"].get("task_name") == task_name
+                filter=lambda record: record["extra"].get("task_name") == task_name,
             )
             self.task_loggers[task_name] = TaskLogger(task_name, self.log_dir, self.config)
         return self.task_loggers[task_name]
