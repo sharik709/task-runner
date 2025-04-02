@@ -3,9 +3,9 @@ requires = ["setuptools>=61.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "task-runner"
+name = "task-processor"
 version = "0.1.0"
-description = "A powerful yet simple task scheduler and automation tool"
+description = "A flexible and extensible task processing system"
 readme = "README.md"
 requires-python = ">=3.8"
 license = {file = "LICENSE"}
@@ -24,13 +24,33 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
 ]
+dependencies = [
+    "pydantic>=2.0.0",
+    "schedule>=1.2.2",
+    "loguru>=0.7.3",
+    "pyyaml>=6.0.1",
+    "python-dateutil>=2.8.2",
+    "typing-extensions>=4.9.0",
+]
 
 [project.urls]
 Homepage = "https://github.com/sharik709/task-runner"
 Issues = "https://github.com/sharik709/task-runner/issues"
 
 [project.scripts]
-task-runner = "task_runner.__main__:main"
+task-processor = "task_runner.__main__:main"
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-cov>=5.0.0",
+    "black>=24.0.0",
+    "isort>=5.13.0",
+    "mypy>=1.9.0",
+    "flake8>=7.0.0",
+    "build>=1.0.0",
+    "twine>=5.0.0",
+]
 
 [tool.setuptools]
 packages = ["task_runner"]
@@ -54,4 +74,4 @@ check_untyped_defs = true
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 python_files = ["test_*.py"]
-addopts = "-v --cov=task_runner"
+addopts = "--cov=task_runner --cov-report=term-missing"

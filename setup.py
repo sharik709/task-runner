@@ -6,8 +6,8 @@ with open("README.md", "r", encoding="utf-8") as fh:
 setup(
     name="task-runner",
     version="0.1.0",
-    author="Your Name",
-    author_email="your.email@example.com",
+    author="Sharik Shaikh",
+    author_email="shaikhsharik709@gmail.com",
     description="A powerful yet simple task runner for scheduling and automating tasks",
     long_description=long_description,
     long_description_content_type="text/markdown",

@@ -1,37 +1,30 @@
-# Task Runner
+# Task Processor
 
-A powerful yet simple task runner that helps you schedule and automate tasks with ease. Perfect for running periodic backups, generating reports, or any other scheduled operations.
+A flexible and extensible task processing system that allows you to schedule, execute, and monitor tasks with ease.
 
 ## Features
 
-- 🕒 **Flexible Scheduling**: Run tasks every minute, hour, day, or year
-- 🔄 **Recurring & One-time Tasks**: Support for both recurring and one-time task execution
-- 📝 **Smart Logging**: Per-task logging with automatic rotation and cleanup
-- 🔄 **Retry Mechanism**: Automatic retries for failed tasks
-- 🔗 **Task Dependencies**: Tasks can depend on other tasks
-- 🔒 **Secure**: No shell injection vulnerabilities, safe command execution
-- 🎯 **Simple**: Easy to use, yet powerful enough for complex workflows
+- **Flexible Task Scheduling**: Support for recurring and one-time tasks
+- **Extensible Plugin System**: Easy integration with various services and databases
+- **Robust Error Handling**: Built-in retry mechanisms and error logging
+- **YAML Configuration**: Simple task configuration using YAML files
+- **Comprehensive Logging**: Detailed logging with rotation and retention policies
+- **Type Safety**: Full type hints and validation using Pydantic
 
 ## Installation
 
 ```bash
-# Install from PyPI
-pip install task-runner
-
-# For development, install with all dev dependencies
-pip install "task-runner[dev]"
+pip install task-processor
 ```
 
 ## Quick Start
 
-### 1. Create Your First Task
-
-Create a file `config/tasks.yaml`:
+1. Create a task configuration file (`tasks.yaml`):
 
 ```yaml
 tasks:
-  - name: "daily_backup"
-    command: "python /path/to/backup.py"
+  - name: "backup_database"
+    command: "pg_dump mydb > backup.sql"
     schedule:
       type: "recurring"
       interval: "1d"
@@ -40,131 +33,78 @@ tasks:
       delay: 300  # 5 minutes
 ```
 
-### 2. Run the Task Runner
+2. Run the task processor:
 
 ```bash
-# Using the command-line tool
-task-runner
-
-# Or using Python
-python -m task_runner
+task-processor --config-dir /path/to/config
 ```
 
-### 3. Using in Your Python Code
-
-```python
-from task_runner import TaskScheduler, ConfigLoader, LogManager, LogConfig
-
-# Initialize components with custom log directory (optional)
-config = LogConfig(log_dir="/path/to/logs")  # Default: ~/.task_runner/logs
-log_manager = LogManager(config)
-config_loader = ConfigLoader()
-scheduler = TaskScheduler()
-
-# Load and schedule tasks
-tasks = config_loader.load_configs()
-for task in tasks:
-    scheduler.schedule_task(task)
-
-# Run the scheduler
-scheduler.run()
-```
-
-## Configuration Guide
+## Configuration
 
 ### Task Configuration
 
-Tasks are configured using YAML files. Here's a complete example:
+Tasks can be configured using YAML files. Each task can have the following properties:
 
 ```yaml
-tasks:
-  - name: "daily_backup"
-    command: "python /path/to/backup.py"
-    schedule:
-      type: "recurring"  # or "one-time"
-      interval: "1d"     # for recurring tasks
-      start_time: "2024-03-25T15:00:00"  # for one-time tasks
-    retry:
-      max_attempts: 3
-      delay: 300  # seconds
-    dependencies: ["other_task"]  # Optional dependencies
+name: "task_name"          # Unique identifier for the task
+command: "command_to_run"  # Shell command to execute
+schedule:
+  type: "recurring"        # or "one-time"
+  interval: "1h"          # for recurring tasks (e.g., "1m", "1h", "1d")
+  start_time: "2024-02-20T10:00:00"  # for one-time tasks
+retry:
+  max_attempts: 3         # Maximum number of retry attempts
+  delay: 60              # Delay between retries in seconds
 ```
 
-### Schedule Types
+### Command Line Options
 
-- **Recurring Tasks**:
-  - `interval`: "1m" (minute), "1h" (hour), "1d" (day), "1y" (year)
-  - Example: `interval: "30m"` for every 30 minutes
+```bash
+task-processor [OPTIONS]
 
-- **One-time Tasks**:
-  - `start_time`: ISO format datetime
-  - Example: `start_time: "2024-03-25T15:00:00"`
-
-## Logging System
-
-Logs are automatically organized by task and invocation:
-
+Options:
+  --config-dir TEXT     Directory containing task configuration files
+  --log-dir TEXT       Directory for log files
+  --max-log-files INT  Maximum number of log files to keep per task
+  --help              Show this message and exit
 ```
-~/.task_runner/logs/
-├── daily_backup/
-│   ├── invocation_20240325_150000.log
-│   └── invocation_20240326_150000.log
-└── weekly_report/
-    ├── invocation_20240325_160000.log
-    └── invocation_20240326_160000.log
-```
-
-Features:
-- Per-task logging directories
-- Per-invocation log files
-- Automatic log rotation and cleanup
-- Configurable log directory
-- Default max of 10 log files per task
-
-## Security Features
-
-- Command execution is done safely without shell injection vulnerabilities
-- All file operations use secure paths
-- Log files are created with appropriate permissions
-- No sensitive data is stored in logs
-- Input validation for all configuration files
 
 ## Development
+
+### Setup
+
+1. Clone the repository:
+```bash
+git clone https://github.com/yourusername/task-processor.git
+cd task-processor
+```
+
+2. Create and activate a virtual environment:
+```bash
+python -m venv .venv
+source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+```
+
+3. Install development dependencies:
+```bash
+pip install -r requirements.txt
+```
 
 ### Running Tests
 
 ```bash
-# Install dev dependencies
-pip install "task-runner[dev]"
-
-# Run tests
 pytest
-
-# Run tests with coverage
-pytest --cov=task_runner
 ```
 
-### Code Style
-
+For coverage report:
 ```bash
-# Format code
-black task_runner tests
-
-# Sort imports
-isort task_runner tests
-
-# Type checking
-mypy task_runner
+pytest --cov=task_runner --cov-report=term-missing
 ```
 
 ## Contributing
 
-1. Fork the repository
-2. Create your feature branch
-3. Commit your changes
-4. Push to the branch
-5. Create a Pull Request
+See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
 ## License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
