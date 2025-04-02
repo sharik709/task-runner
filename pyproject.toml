@@ -26,8 +26,8 @@ classifiers = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/yourusername/task-runner"
-Issues = "https://github.com/yourusername/task-runner/issues"
+Homepage = "https://github.com/sharik709/task-runner"
+Issues = "https://github.com/sharik709/task-runner/issues"
 
 [project.scripts]
 task-runner = "task_runner.__main__:main"

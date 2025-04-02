@@ -11,7 +11,7 @@ setup(
     description="A powerful yet simple task runner for scheduling and automating tasks",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/yourusername/task-runner",
+    url="https://github.com/sharik709/task-runner",
     packages=find_packages(),
     classifiers=[
         "Development Status :: 4 - Beta",
