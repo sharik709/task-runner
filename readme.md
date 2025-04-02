@@ -1,95 +1,247 @@
 # Task Runner
 
-A robust and simple task runner that can schedule tasks from every minute to once a year, with support for one-time and recurring tasks.
+A powerful yet simple task runner that helps you schedule and automate tasks with ease. Perfect for running periodic backups, generating reports, or any other scheduled operations.
 
 ## Features
 
-- Flexible scheduling (minutes, hours, days, years)
-- One-time and recurring tasks
-- Per-task logging
-- Configurable retry mechanism
-- Task dependencies
-- SQLite-based persistence
-- Configuration-based task management
+- 🕒 **Flexible Scheduling**: Run tasks every minute, hour, day, or year
+- 🔄 **Recurring & One-time Tasks**: Support for both recurring and one-time task execution
+- 🔌 **Plugin System**: Built-in support for MySQL, PostgreSQL, Redis, and HTTP operations
+- 📝 **Smart Logging**: Per-task logging with automatic rotation and cleanup
+- 🔄 **Retry Mechanism**: Automatic retries for failed tasks
+- 🔗 **Task Dependencies**: Tasks can depend on other tasks
+- 🐳 **Docker Ready**: Easy to containerize and deploy
+- ☸️ **Kubernetes Support**: Ready to run in your K8s cluster
 
-## Project Structure
+## Installation
 
-```
-task_runner/
-├── config/             # Task configuration files
-├── logs/              # Task logs
-├── src/               # Source code
-│   ├── models/        # Database models
-│   ├── scheduler/     # Scheduling logic
-│   ├── executor/      # Task execution
-│   └── utils/         # Utility functions
-├── tests/             # Test files
-└── requirements.txt   # Project dependencies
+```bash
+# Install from PyPI
+pip install task-runner
+
+# Or install with all optional dependencies
+pip install "task-runner[all]"
 ```
 
-## Configuration
+## Quick Start
 
-Tasks are configured using YAML files in the `config` directory. Example configuration:
+### 1. Create Your First Task
+
+Create a file `config/tasks.yaml`:
 
 ```yaml
 tasks:
-  - name: "example_task"
+  - name: "daily_backup"
+    command: "python /path/to/backup.py"
     schedule:
-      type: "recurring"  # or "one-time"
-      interval: "1h"     # for recurring tasks
-      start_time: "2024-03-20T10:00:00"  # for one-time tasks
-    command: "python /path/to/script.py"
+      type: "recurring"
+      interval: "1d"
     retry:
       max_attempts: 3
-      delay: 60  # seconds
-    dependencies: ["other_task"]
-    log_level: "INFO"
+      delay: 300  # 5 minutes
+    plugins:
+      - name: "mysql"
+        config:
+          host: "localhost"
+          port: 3306
+          user: "backup_user"
+          database: "my_db"
 ```
 
-## Usage
-
-1. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-2. Configure your tasks in YAML files in the `config` directory
-
-3. Run the task runner:
-   ```bash
-   python src/main.py
-   ```
-
-## Docker
-
-To build and run with Docker:
+### 2. Run the Task Runner
 
 ```bash
-docker build -t task-runner .
-docker run -d --name task-runner task-runner
+# Using the command-line tool
+task-runner
+
+# Or using Python
+python -m task_runner
 ```
 
-## Kubernetes
-
-The task runner can be deployed to Kubernetes using the provided manifests in the `k8s` directory.
+### 3. Using in Your Python Code
 
 ```python
-from runner import run
+from task_runner import TaskScheduler, ConfigLoader, LogManager, LogConfig
 
+# Initialize components
+config_loader = ConfigLoader()
+log_manager = LogManager(LogConfig())
+scheduler = TaskScheduler()
 
-@run("1", "daily", "10:00")
-def daily_running_task():
-    print("Daily running task")
+# Load and schedule tasks
+tasks = config_loader.load_configs()
+for task in tasks:
+    scheduler.schedule_task(task)
 
-@run("1", "hour")
-def every_hour_task():
-    print("Every hour task")
-
-@run("1", "minute"):
-def every_minute_task():
-    print("Every minute task")
-
-@run("once", "month")
-def once_a_month_task():
-    print("Once a month task")
+# Run the scheduler
+scheduler.run()
 ```
+
+## Configuration Guide
+
+### Task Configuration
+
+Tasks are configured using YAML files. Here's a complete example:
+
+```yaml
+tasks:
+  - name: "daily_backup"
+    command: "python /path/to/backup.py"
+    schedule:
+      type: "recurring"  # or "one-time"
+      interval: "1d"     # for recurring tasks
+      start_time: "2024-03-25T15:00:00"  # for one-time tasks
+    retry:
+      max_attempts: 3
+      delay: 300
+    dependencies: ["other_task"]  # Optional dependencies
+    plugins:  # Optional plugins
+      - name: "mysql"
+        config:
+          host: "localhost"
+          port: 3306
+          user: "user"
+          database: "db"
+```
+
+### Schedule Types
+
+- **Recurring Tasks**:
+  - `interval`: "1m" (minute), "1h" (hour), "1d" (day), "1y" (year)
+  - Example: `interval: "30m"` for every 30 minutes
+
+- **One-time Tasks**:
+  - `start_time`: ISO format datetime
+  - Example: `start_time: "2024-03-25T15:00:00"`
+
+### Available Plugins
+
+#### MySQL Plugin
+```yaml
+plugins:
+  - name: "mysql"
+    config:
+      host: "localhost"
+      port: 3306
+      user: "user"
+      password: "password"
+      database: "db"
+```
+
+#### PostgreSQL Plugin
+```yaml
+plugins:
+  - name: "postgres"
+    config:
+      host: "localhost"
+      port: 5432
+      user: "user"
+      password: "password"
+      database: "db"
+```
+
+#### Redis Plugin
+```yaml
+plugins:
+  - name: "redis"
+    config:
+      host: "localhost"
+      port: 6379
+      password: "password"
+      db: 0
+```
+
+#### HTTP Plugin
+```yaml
+plugins:
+  - name: "http"
+    config:
+      base_url: "https://api.example.com"
+      headers:
+        Authorization: "Bearer token"
+```
+
+## Logging System
+
+Logs are automatically organized by task and invocation:
+
+```
+logs/
+├── daily_backup/
+│   ├── invocation_20240325_150000.log
+│   └── invocation_20240326_150000.log
+└── weekly_report/
+    ├── invocation_20240325_160000.log
+    └── invocation_20240326_160000.log
+```
+
+Features:
+- Per-task logging directories
+- Per-invocation log files
+- Automatic log rotation and compression
+- Configurable retention policy
+
+## Deployment
+
+### Docker
+
+```bash
+# Build the image
+docker build -t task-runner .
+
+# Run the container
+docker run -d \
+  -v /path/to/config:/app/config \
+  -v /path/to/logs:/app/logs \
+  task-runner
+```
+
+### Kubernetes
+
+1. Apply the Kubernetes manifests:
+```bash
+kubectl apply -f k8s/
+```
+
+2. Configure your tasks in the ConfigMap:
+```bash
+kubectl edit configmap task-runner-config
+```
+
+3. Monitor the deployment:
+```bash
+kubectl logs -f deployment/task-runner
+```
+
+## Development
+
+### Project Structure
+```
+task_runner/
+├── core/           # Core functionality
+├── plugins/        # Plugin implementations
+│   ├── mysql/
+│   ├── postgres/
+│   ├── redis/
+│   └── http/
+└── utils/          # Utility functions
+```
+
+### Adding New Plugins
+
+1. Create a new plugin class in `plugins/your_plugin/plugin.py`
+2. Inherit from `BasePlugin`
+3. Implement required methods
+4. Register the plugin in `setup.py`
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.

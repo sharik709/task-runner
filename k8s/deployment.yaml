@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: task-runner
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: task-runner
+  template:
+    metadata:
+      labels:
+        app: task-runner
+    spec:
+      containers:
+      - name: task-runner
+        image: task-runner:latest
+        imagePullPolicy: Always
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        volumeMounts:
+        - name: config-volume
+          mountPath: /app/config
+        - name: logs-volume
+          mountPath: /app/logs
+        - name: scripts-volume
+          mountPath: /app/scripts
+        env:
+        - name: TASK_RUNNER_LOG_LEVEL
+          value: "INFO"
+        - name: TASK_RUNNER_RETENTION_DAYS
+          value: "30"
+        - name: TASK_RUNNER_MAX_INVOCATIONS
+          value: "100"
+      volumes:
+      - name: config-volume
+        configMap:
+          name: task-runner-config
+      - name: logs-volume
+        persistentVolumeClaim:
+          claimName: task-runner-logs-pvc
+      - name: scripts-volume
+        configMap:
+          name: task-runner-scripts
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: task-runner
+spec:
+  selector:
+    app: task-runner
+  ports:
+  - port: 8080
+    targetPort: 8080
+    protocol: TCP
+    name: http
+  type: ClusterIP

@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: task-runner-config
+data:
+  tasks.yaml: |
+    tasks:
+      - name: "daily_backup"
+        command: "python /app/scripts/backup.py"
+        schedule:
+          type: "recurring"
+          interval: "1d"
+        retry:
+          max_attempts: 3
+          delay: 300
+        dependencies: []
+        log_level: "INFO"
+        plugins:
+          - name: "mysql"
+            config:
+              host: "mysql-service"
+              port: 3306
+              user: "backup_user"
+              database: "backup_db"
+
+      - name: "weekly_report"
+        command: "python /app/scripts/report.py"
+        schedule:
+          type: "recurring"
+          interval: "7d"
+        retry:
+          max_attempts: 2
+          delay: 600
+        dependencies: ["daily_backup"]
+        log_level: "INFO"
+        plugins:
+          - name: "postgres"
+            config:
+              host: "postgres-service"
+              port: 5432
+              user: "report_user"
+              database: "report_db"
