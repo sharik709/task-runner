@@ -75,7 +75,7 @@ Options:
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/task-processor.git
+git clone https://github.com/sharik709/task-processor.git
 cd task-processor
 ```
 
@@ -98,7 +98,7 @@ pytest
 
 For coverage report:
 ```bash
-pytest --cov=task_runner --cov-report=term-missing
+pytest --cov=task_processor --cov-report=term-missing
 ```
 
 ## Contributing

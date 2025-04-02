@@ -34,11 +34,11 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/sharik709/task-runner"
-Issues = "https://github.com/sharik709/task-runner/issues"
+Homepage = "https://github.com/sharik709/task-processor"
+Issues = "https://github.com/sharik709/task-processor/issues"
 
 [project.scripts]
-task-processor = "task_runner.__main__:main"
+task-processor = "task_processor.__main__:main"
 
 [project.optional-dependencies]
 dev = [
@@ -53,11 +53,11 @@ dev = [
 ]
 
 [tool.setuptools]
-packages = ["task_runner"]
+packages = ["task_processor"]
 
 [tool.black]
 line-length = 88
-target-version = ["py38"]
+target-version = ['py38']
 include = '\.pyi?$'
 
 [tool.isort]
@@ -74,4 +74,4 @@ check_untyped_defs = true
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 python_files = ["test_*.py"]
-addopts = "--cov=task_runner --cov-report=term-missing"
+addopts = "--cov=task_processor --cov-report=term-missing"
