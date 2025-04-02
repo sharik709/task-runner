@@ -1,12 +1,12 @@
 """
-Task Runner - A powerful yet simple task scheduler and automation tool.
+Task Processor - A flexible and extensible task processing system
 """
 
-from task_runner.core.models import Task, Schedule, RetryConfig
-from task_runner.core.scheduler import TaskScheduler
-from task_runner.core.executor import TaskExecutor
-from task_runner.utils.config_loader import ConfigLoader
-from task_runner.utils.logging import LogManager, LogConfig
+from task_processor.core.models import Task, Schedule, RetryConfig
+from task_processor.core.scheduler import TaskScheduler
+from task_processor.core.executor import TaskExecutor
+from task_processor.utils.config_loader import ConfigLoader
+from task_processor.utils.logging import LogManager, LogConfig
 
 __version__ = "0.1.0"
 __author__ = "Your Name"

@@ -1,139 +1,95 @@
-# Contributing to Task Runner
+# Contributing to Task Processor
 
-Thank you for your interest in contributing to Task Runner! This document provides guidelines and instructions for contributing to the project.
+Thank you for your interest in contributing to Task Processor! This document provides guidelines and instructions for contributing to the project.
 
 ## Development Setup
 
-1. Clone the repository:
-```bash
-git clone https://github.com/sharik709/task-runner.git
-cd task-runner
-```
+1. Fork the repository:
+   ```bash
+   git clone https://github.com/sharik709/task-processor.git
+   cd task-processor
+   ```
 
-2. Create and activate a virtual environment:
-```bash
-python -m venv .venv
-source .venv/bin/activate  # On Windows: .venv\Scripts\activate
-```
+2. Create a virtual environment and activate it:
+   ```bash
+   python -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
+   ```
 
 3. Install development dependencies:
-```bash
-pip install -r requirements.txt
-```
+   ```bash
+   pip install -r requirements.txt
+   pip install pytest pytest-cov black isort
+   ```
 
 ## Code Style
 
-We use several tools to maintain code quality and consistency:
+We use the following tools to maintain code quality:
 
-### Code Formatting
+- `black` for code formatting
+- `isort` for import sorting
+- `pytest` for testing
+- `pytest-cov` for coverage reporting
 
-Before committing your changes, please format your code using:
-
-```bash
-# Format code with black
-black .
-
-# Sort imports with isort
-isort .
-```
-
-You can also set up pre-commit hooks to automatically format your code before each commit. To do this:
-
-1. Install pre-commit:
-```bash
-pip install pre-commit
-```
-
-2. Install the git hooks:
-```bash
-pre-commit install
-```
-
-Now your code will be automatically formatted before each commit.
-
-### Type Checking
-
-We use mypy for static type checking. Run it locally with:
+Before submitting a pull request, please run:
 
 ```bash
-mypy task_runner tests
-```
-
-### Linting
-
-We use flake8 for code linting. Run it locally with:
-
-```bash
-flake8 task_runner tests
-```
-
-## Running Tests
-
-Before submitting a pull request, ensure all tests pass:
-
-```bash
-# Run tests with coverage
-pytest --cov=task_runner --cov-report=term-missing
+black task_processor tests
+isort task_processor tests
+pytest --cov=task_processor --cov-report=term-missing
 ```
 
 ## Pull Request Process
 
-1. Create a new branch for your feature:
-```bash
-git checkout -b feature/your-feature-name
-```
+1. Create a new branch for your feature or bug fix:
+   ```bash
+   git checkout -b feature/your-feature-name
+   # or
+   git checkout -b fix/your-bug-fix
+   ```
 
 2. Make your changes and commit them:
+   ```bash
+   git add .
+   git commit -m "feat: add your feature description"
+   ```
+
+3. Push your changes to your fork:
+   ```bash
+   git push origin feature/your-feature-name
+   ```
+
+4. Create a pull request from your fork to the main repository.
+
+## Testing
+
+We use pytest for testing. To run the tests:
+
 ```bash
-git add .
-git commit -m "feat: your feature description"
+pytest --cov=task_processor --cov-report=term-missing
 ```
 
-3. Push your changes:
-```bash
-git push origin feature/your-feature-name
-```
+Make sure all tests pass and maintain or improve the test coverage before submitting a pull request.
 
-4. Create a pull request from your branch to main.
+## Documentation
 
-## Commit Messages
+- Update the README.md if you add new features or change existing ones
+- Add docstrings to all new functions and classes
+- Update the API documentation if you modify the public API
 
-We follow the [Conventional Commits](https://www.conventionalcommits.org/) specification. Your commit messages should be formatted as:
+## Release Process
 
-```
-type(scope): description
-```
+1. Update the version in `pyproject.toml`
+2. Update the changelog in `CHANGELOG.md`
+3. Create a new release on GitHub
+4. Build and publish to PyPI:
+   ```bash
+   python -m build
+   python -m twine upload dist/*
+   ```
 
-Types:
-- `feat`: New feature
-- `fix`: Bug fix
-- `docs`: Documentation changes
-- `style`: Code style changes (formatting, etc.)
-- `refactor`: Code refactoring
-- `test`: Adding or modifying tests
-- `chore`: Maintenance tasks
+## Questions?
 
-Example:
-```
-feat(scheduler): add support for one-time tasks
-```
+If you have any questions, please open an issue or contact the maintainers.
 
-## CI/CD Pipeline
-
-Our CI/CD pipeline runs the following checks:
-- Code formatting (black and isort)
-- Type checking (mypy)
-- Linting (flake8)
-- Tests with coverage reporting
-- Package building and validation
-
-All checks must pass before a pull request can be merged.
-
-## Need Help?
-
-If you have any questions or need help, please:
-1. Check the existing documentation
-2. Open an issue
-3. Join our community discussions
-
-Thank you for contributing to Task Runner!
+Thank you for contributing to Task Processor!

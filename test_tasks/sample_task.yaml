@@ -1,0 +1,9 @@
+tasks:
+  - name: "hello_world"
+    command: "echo 'Hello, World!'"
+    schedule:
+      type: "recurring"
+      interval: "1m"
+    retry:
+      max_attempts: 3
+      delay: 30

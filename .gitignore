@@ -21,28 +21,29 @@ wheels/
 *.egg
 
 # Virtual Environment
-.env
-.venv
-env/
 venv/
 ENV/
+env/
+.env
 
 # IDE
 .idea/
 .vscode/
 *.swp
 *.swo
+.DS_Store
 
 # Logs
-logs/
 *.log
+logs/
+~/.task_processor/
 
-# Local development
-.DS_Store
+# Test coverage
 .coverage
+coverage.xml
 htmlcov/
-.pytest_cache/
-.mypy_cache/
 
-# Task Runner specific
-~/.task_runner/
+# Distribution
+dist/
+build/
+*.egg-info/

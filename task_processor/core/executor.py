@@ -1,55 +1,50 @@
 import subprocess
-from typing import List
-from task_runner.core.models import Task
-from task_runner.utils.logging import LogManager
+from typing import Optional
+import time
+
+from task_processor.core.models import Task
+from task_processor.utils.logging import LogManager, LogConfig
 
 
 class TaskExecutor:
-    def __init__(self, log_manager: LogManager):
-        self.log_manager = log_manager
+    def __init__(self, log_manager: Optional[LogManager] = None):
+        """Initialize the task executor."""
+        self.log_manager = log_manager or LogManager(LogConfig())
 
     def execute_task(self, task: Task) -> None:
-        log_file = self.log_manager.get_log_file(task.name)
+        """Execute a task and handle its output."""
+        logger = self.log_manager.get_logger(task.name)
+        logger.info(f"Starting task: {task.name}")
 
         try:
-            # Split command into list for secure execution
-            cmd = task.command.split()
-
-            # Execute command and capture output
-            process = subprocess.Popen(
-                cmd,
-                stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE,
+            result = subprocess.run(
+                task.command,
+                shell=True,
+                capture_output=True,
                 text=True,
-                shell=False,  # Prevent shell injection
+                timeout=task.timeout if hasattr(task, "timeout") else None,
             )
 
-            stdout, stderr = process.communicate()
+            if result.returncode == 0:
+                logger.info(f"Task {task.name} completed successfully")
+                logger.debug(result.stdout)
+            else:
+                logger.error(f"Task {task.name} failed with exit code {result.returncode}")
+                logger.error(result.stderr)
+                self._handle_failure(task)
 
-            # Log output
-            with open(log_file, "a") as f:
-                f.write(f"=== Task: {task.name} ===\n")
-                f.write(f"Command: {task.command}\n")
-                f.write(
-                    f"Status: {'Success' if process.returncode == 0 else 'Failed'}\n"
-                )
-                f.write(f"Return Code: {process.returncode}\n")
-                if stdout:
-                    f.write("\n=== Output ===\n")
-                    f.write(stdout)
-                if stderr:
-                    f.write("\n=== Error ===\n")
-                    f.write(stderr)
-                f.write("\n\n")
-
-            if process.returncode != 0:
-                raise subprocess.CalledProcessError(process.returncode, cmd)
-
+        except subprocess.TimeoutExpired:
+            logger.error(f"Task {task.name} timed out")
+            self._handle_failure(task)
         except Exception as e:
-            # Log error
-            with open(log_file, "a") as f:
-                f.write(f"=== Task: {task.name} ===\n")
-                f.write(f"Command: {task.command}\n")
-                f.write(f"Status: Failed\n")
-                f.write(f"Error: {str(e)}\n\n")
-            raise
+            logger.error(f"Task {task.name} failed with error: {str(e)}")
+            self._handle_failure(task)
+
+    def _handle_failure(self, task: Task) -> None:
+        """Handle task failure and retry logic."""
+        if task.retry and task.retry.max_attempts > 0:
+            task.retry.max_attempts -= 1
+            logger = self.log_manager.get_logger(task.name)
+            logger.info(f"Retrying task {task.name} in {task.retry.delay} seconds")
+            time.sleep(task.retry.delay)
+            self.execute_task(task)
