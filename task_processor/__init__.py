@@ -8,7 +8,7 @@ from task_processor.core.scheduler import TaskScheduler
 from task_processor.utils.config_loader import ConfigLoader
 from task_processor.utils.logging import LogConfig, LogManager
 
-__version__ = "0.1.4"
+__version__ = "0.1.6"
 __author__ = "Sharik Shaikh"
 __email__ = "shaikhsharik709@gmail.com"
 

@@ -4,8 +4,8 @@ with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 setup(
-    name="task-processor",
-    version="0.1.4",
+    name="taskops",
+    version="0.1.6",
     author="Sharik Shaikh",
     author_email="shaikhsharik709@gmail.com",
     description="A powerful yet simple task processor for scheduling and automating tasks",
@@ -31,6 +31,7 @@ setup(
         "pydantic>=2.0.0",
         "schedule>=1.2.0",
         "loguru>=0.7.0",
+        "pyyaml>=6.0",
     ],
     extras_require={
         "dev": [
@@ -47,7 +48,7 @@ setup(
     },
     entry_points={
         "console_scripts": [
-            "task-processor=task_processor.__main__:main",
+            "taskops=task_processor.__main__:main",
         ],
     },
 )

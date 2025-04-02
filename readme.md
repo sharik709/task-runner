@@ -1,4 +1,4 @@
-# Task Processor
+# TaskOps
 
 A flexible and extensible task processing system that allows you to schedule, execute, and monitor tasks with ease.
 
@@ -20,8 +20,15 @@ pip install git+https://github.com/sharik709/task-processor.git
 
 ### From TestPyPI
 ```bash
-pip install -i https://test.pypi.org/simple/ task-processor
+pip install -i https://test.pypi.org/simple/ taskops
 ```
+
+### From PyPI
+```bash
+pip install taskops
+```
+
+This will install TaskOps along with its dependencies (pydantic, schedule, loguru, and pyyaml).
 
 ## Quick Start
 
@@ -42,7 +49,7 @@ tasks:
 2. Run the task processor:
 
 ```bash
-task-processor --config-dir /path/to/config
+taskops --config-dir /path/to/config
 ```
 
 ## Configuration
@@ -66,7 +73,7 @@ retry:
 ### Command Line Options
 
 ```bash
-task-processor [OPTIONS]
+taskops [OPTIONS]
 
 Options:
   --config-dir TEXT     Directory containing task configuration files
@@ -77,7 +84,7 @@ Options:
 
 ### Python API Usage
 
-You can also use the task-processor directly in your Python code:
+You can also use TaskOps directly in your Python code:
 
 ```python
 from datetime import datetime
@@ -131,7 +138,7 @@ except KeyboardInterrupt:
     scheduler.stop()
 ```
 
-For a complete working example, see [example_task_processor.py](example_task_processor.py).
+For a complete working example, see [example_taskops.py](example_taskops.py).
 
 ## Development
 

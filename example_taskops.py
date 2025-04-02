@@ -1,5 +1,5 @@
 """
-Example script for using task-processor directly in Python code.
+Example script for using TaskOps directly in Python code.
 """
 from datetime import datetime
 from task_processor import Task, Schedule, RetryConfig, TaskScheduler, LogManager, LogConfig
