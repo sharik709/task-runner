@@ -4,6 +4,7 @@ from typing import List
 import yaml
 from task_runner.core.models import Task
 
+
 class ConfigLoader:
     def __init__(self, config_dir: str = "config"):
         self.config_dir = Path(config_dir)

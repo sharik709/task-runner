@@ -5,8 +5,15 @@ from loguru import logger
 import os
 from typing import Optional
 
+
 class TaskExecutor:
-    def __init__(self, task_name: str, command: str, retry_max_attempts: int = 3, retry_delay: int = 60):
+    def __init__(
+        self,
+        task_name: str,
+        command: str,
+        retry_max_attempts: int = 3,
+        retry_delay: int = 60,
+    ):
         self.task_name = task_name
         self.command = command
         self.retry_max_attempts = retry_max_attempts
@@ -19,7 +26,7 @@ class TaskExecutor:
             f"{log_dir}/{task_name}.log",
             rotation="1 day",
             retention="7 days",
-            level="INFO"
+            level="INFO",
         )
 
     def execute(self) -> bool:
@@ -30,7 +37,9 @@ class TaskExecutor:
         attempt = 0
         while attempt < self.retry_max_attempts:
             attempt += 1
-            logger.info(f"Starting task '{self.task_name}' (attempt {attempt}/{self.retry_max_attempts})")
+            logger.info(
+                f"Starting task '{self.task_name}' (attempt {attempt}/{self.retry_max_attempts})"
+            )
 
             try:
                 # Execute the command
@@ -39,7 +48,7 @@ class TaskExecutor:
                     shell=True,
                     stdout=subprocess.PIPE,
                     stderr=subprocess.PIPE,
-                    text=True
+                    text=True,
                 )
 
                 # Read output in real-time
@@ -62,15 +71,21 @@ class TaskExecutor:
                     logger.success(f"Task '{self.task_name}' completed successfully")
                     return True
                 else:
-                    logger.error(f"Task '{self.task_name}' failed with return code {return_code}")
+                    logger.error(
+                        f"Task '{self.task_name}' failed with return code {return_code}"
+                    )
 
             except Exception as e:
                 logger.exception(f"Error executing task '{self.task_name}': {str(e)}")
 
             # If we get here, the task failed
             if attempt < self.retry_max_attempts:
-                logger.warning(f"Retrying task '{self.task_name}' in {self.retry_delay} seconds...")
+                logger.warning(
+                    f"Retrying task '{self.task_name}' in {self.retry_delay} seconds..."
+                )
                 time.sleep(self.retry_delay)
 
-        logger.error(f"Task '{self.task_name}' failed after {self.retry_max_attempts} attempts")
+        logger.error(
+            f"Task '{self.task_name}' failed after {self.retry_max_attempts} attempts"
+        )
         return False

@@ -7,6 +7,7 @@ from models.task import Task
 from models.database import Database
 from executor.task_executor import TaskExecutor
 
+
 class TaskScheduler:
     def __init__(self):
         self.db = Database.get_instance()
@@ -19,13 +20,13 @@ class TaskScheduler:
             value = int(interval[:-1])
             unit = interval[-1].lower()
 
-            if unit == 'm':
+            if unit == "m":
                 return timedelta(minutes=value)
-            elif unit == 'h':
+            elif unit == "h":
                 return timedelta(hours=value)
-            elif unit == 'd':
+            elif unit == "d":
                 return timedelta(days=value)
-            elif unit == 'y':
+            elif unit == "y":
                 return timedelta(days=value * 365)
             else:
                 logger.error(f"Invalid interval unit: {unit}")
@@ -62,7 +63,7 @@ class TaskScheduler:
                 task_name=task.name,
                 command=task.command,
                 retry_max_attempts=task.retry_max_attempts,
-                retry_delay=task.retry_delay
+                retry_delay=task.retry_delay,
             )
 
             success = executor.execute()
@@ -79,10 +80,10 @@ class TaskScheduler:
 
     def _calculate_next_run(self, task: Task) -> Optional[datetime]:
         """Calculate the next run time for a task"""
-        if task.schedule_type == 'one-time':
+        if task.schedule_type == "one-time":
             return None
 
-        if task.schedule_type == 'recurring' and task.schedule_interval:
+        if task.schedule_type == "recurring" and task.schedule_interval:
             interval = self._parse_interval(task.schedule_interval)
             if interval:
                 return datetime.utcnow() + interval
@@ -94,13 +95,17 @@ class TaskScheduler:
             logger.warning(f"Task '{task.name}' is already scheduled")
             return
 
-        if task.schedule_type == 'one-time':
+        if task.schedule_type == "one-time":
             if task.start_time and task.start_time > datetime.utcnow():
-                job = schedule.every().day.at(task.start_time.strftime('%H:%M')).do(
-                    self._execute_task, task
+                job = (
+                    schedule.every()
+                    .day.at(task.start_time.strftime("%H:%M"))
+                    .do(self._execute_task, task)
                 )
                 self.scheduled_tasks[task.name] = job
-                logger.info(f"Scheduled one-time task '{task.name}' for {task.start_time}")
+                logger.info(
+                    f"Scheduled one-time task '{task.name}' for {task.start_time}"
+                )
             else:
                 logger.warning(f"One-time task '{task.name}' start time is in the past")
         else:
@@ -110,7 +115,9 @@ class TaskScheduler:
                     self._execute_task, task
                 )
                 self.scheduled_tasks[task.name] = job
-                logger.info(f"Scheduled recurring task '{task.name}' with interval {task.schedule_interval}")
+                logger.info(
+                    f"Scheduled recurring task '{task.name}' with interval {task.schedule_interval}"
+                )
 
     def run(self):
         """Run the scheduler"""

@@ -3,6 +3,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
 import os
 
+
 class Database:
     _instance = None
     _engine = None
@@ -19,14 +20,14 @@ class Database:
             return
 
         # Create data directory if it doesn't exist
-        os.makedirs('data', exist_ok=True)
+        os.makedirs("data", exist_ok=True)
 
         # Create SQLite database
-        db_path = 'data/tasks.db'
+        db_path = "data/tasks.db"
         self._engine = create_engine(
-            f'sqlite:///{db_path}',
-            connect_args={'check_same_thread': False},
-            poolclass=StaticPool
+            f"sqlite:///{db_path}",
+            connect_args={"check_same_thread": False},
+            poolclass=StaticPool,
         )
         self._Session = sessionmaker(bind=self._engine)
 
@@ -37,4 +38,5 @@ class Database:
     def init_db(self):
         """Initialize the database, creating all tables."""
         from .task import Base
+
         Base.metadata.create_all(self._engine)

@@ -3,6 +3,7 @@ from typing import List
 from task_runner.core.models import Task
 from task_runner.utils.logging import LogManager
 
+
 class TaskExecutor:
     def __init__(self, log_manager: LogManager):
         self.log_manager = log_manager
@@ -20,7 +21,7 @@ class TaskExecutor:
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
                 text=True,
-                shell=False  # Prevent shell injection
+                shell=False,  # Prevent shell injection
             )
 
             stdout, stderr = process.communicate()
@@ -29,7 +30,9 @@ class TaskExecutor:
             with open(log_file, "a") as f:
                 f.write(f"=== Task: {task.name} ===\n")
                 f.write(f"Command: {task.command}\n")
-                f.write(f"Status: {'Success' if process.returncode == 0 else 'Failed'}\n")
+                f.write(
+                    f"Status: {'Success' if process.returncode == 0 else 'Failed'}\n"
+                )
                 f.write(f"Return Code: {process.returncode}\n")
                 if stdout:
                     f.write("\n=== Output ===\n")

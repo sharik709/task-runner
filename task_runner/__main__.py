@@ -3,22 +3,24 @@ import sys
 from pathlib import Path
 from task_runner import TaskScheduler, ConfigLoader, LogManager, LogConfig
 
+
 def main():
-    parser = argparse.ArgumentParser(description="Task Runner - A powerful yet simple task scheduler")
+    parser = argparse.ArgumentParser(
+        description="Task Runner - A powerful yet simple task scheduler"
+    )
     parser.add_argument(
         "--config-dir",
         default="config",
-        help="Directory containing task configuration files (default: config)"
+        help="Directory containing task configuration files (default: config)",
     )
     parser.add_argument(
-        "--log-dir",
-        help="Directory for log files (default: ~/.task_runner/logs)"
+        "--log-dir", help="Directory for log files (default: ~/.task_runner/logs)"
     )
     parser.add_argument(
         "--max-log-files",
         type=int,
         default=10,
-        help="Maximum number of log files to keep per task (default: 10)"
+        help="Maximum number of log files to keep per task (default: 10)",
     )
 
     args = parser.parse_args()
@@ -47,6 +49,7 @@ def main():
     except Exception as e:
         print(f"Error: {str(e)}", file=sys.stderr)
         sys.exit(1)
+
 
 if __name__ == "__main__":
     main()

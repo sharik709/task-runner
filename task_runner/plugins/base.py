@@ -2,11 +2,14 @@ from abc import ABC, abstractmethod
 from typing import Any, Dict, Optional
 from pydantic import BaseModel
 
+
 class PluginConfig(BaseModel):
     """Base configuration for all plugins"""
+
     name: str
     enabled: bool = True
     config: Dict[str, Any] = {}
+
 
 class BasePlugin(ABC):
     """Base class for all plugins"""
@@ -40,6 +43,7 @@ class BasePlugin(ABC):
         """Context manager exit"""
         self.cleanup()
 
+
 class PluginManager:
     """Manages plugin loading and lifecycle"""
 
@@ -47,7 +51,9 @@ class PluginManager:
         self._plugins: Dict[str, BasePlugin] = {}
         self._configs: Dict[str, PluginConfig] = {}
 
-    def register_plugin(self, name: str, plugin_class: type[BasePlugin], config: PluginConfig) -> None:
+    def register_plugin(
+        self, name: str, plugin_class: type[BasePlugin], config: PluginConfig
+    ) -> None:
         """Register a new plugin"""
         if name in self._plugins:
             raise ValueError(f"Plugin {name} is already registered")

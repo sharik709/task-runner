@@ -4,8 +4,10 @@ from mysql.connector import Error
 from pydantic import BaseModel, Field
 from ..base import BasePlugin, PluginConfig
 
+
 class MySQLConfig(PluginConfig):
     """MySQL plugin configuration"""
+
     host: str = Field(..., description="MySQL host")
     port: int = Field(3306, description="MySQL port")
     user: str = Field(..., description="MySQL user")
@@ -13,6 +15,7 @@ class MySQLConfig(PluginConfig):
     database: str = Field(..., description="MySQL database name")
     pool_size: int = Field(5, description="Connection pool size")
     pool_name: str = Field("task_runner_pool", description="Connection pool name")
+
 
 class MySQLPlugin(BasePlugin):
     """MySQL plugin for database operations"""
@@ -32,7 +35,7 @@ class MySQLPlugin(BasePlugin):
                 port=self.config.port,
                 user=self.config.user,
                 password=self.config.password,
-                database=self.config.database
+                database=self.config.database,
             )
             self._initialized = True
         except Error as e:
@@ -51,7 +54,9 @@ class MySQLPlugin(BasePlugin):
             raise RuntimeError("MySQL plugin not initialized")
         return self._pool.get_connection()
 
-    def execute_query(self, query: str, params: Optional[List[Any]] = None) -> List[Dict[str, Any]]:
+    def execute_query(
+        self, query: str, params: Optional[List[Any]] = None
+    ) -> List[Dict[str, Any]]:
         """Execute a SELECT query and return results"""
         with self.get_connection() as conn:
             with conn.cursor(dictionary=True) as cursor:

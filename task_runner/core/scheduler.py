@@ -6,6 +6,7 @@ from typing import Dict, Optional
 from task_runner.utils.logging import LogManager
 from task_runner.core.models import Task
 
+
 class TaskScheduler:
     def __init__(self, log_manager: LogManager):
         self.log_manager = log_manager
@@ -28,7 +29,9 @@ class TaskScheduler:
                 raise ValueError(f"Unsupported interval format: {interval}")
         elif task.schedule.type == "one-time":
             if task.schedule.start_time > datetime.now():
-                schedule.every().day.at(task.schedule.start_time.strftime("%H:%M")).do(self._run_task, task)
+                schedule.every().day.at(task.schedule.start_time.strftime("%H:%M")).do(
+                    self._run_task, task
+                )
 
     def _run_task(self, task: Task) -> None:
         """Execute a task and handle its output"""
@@ -41,7 +44,7 @@ class TaskScheduler:
                 shell=True,
                 capture_output=True,
                 text=True,
-                timeout=task.timeout if hasattr(task, 'timeout') else None
+                timeout=task.timeout if hasattr(task, "timeout") else None,
             )
 
             task.last_run = datetime.now()
