@@ -1,0 +1,57 @@
+name: Branch Protection
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check if PR is from a fork
+        id: check-fork
+        run: |
+          if [ "${{ github.event.pull_request.head.repo.full_name }}" != "${{ github.repository }}" ]; then
+            echo "is_fork=true" >> $GITHUB_OUTPUT
+          else
+            echo "is_fork=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Check PR title
+        if: steps.check-fork.outputs.is_fork == 'false'
+        run: |
+          if ! echo "${{ github.event.pull_request.title }}" | grep -qE '^(feat|fix|docs|style|refactor|test|chore)(\(.+\))?: .+'; then
+            echo "PR title must follow conventional commits format: type(scope): description"
+            exit 1
+          fi
+
+      - name: Check PR description
+        if: steps.check-fork.outputs.is_fork == 'false'
+        run: |
+          if [ -z "${{ github.event.pull_request.body }}" ]; then
+            echo "PR description cannot be empty"
+            exit 1
+          fi
+
+      - name: Check commit messages
+        if: steps.check-fork.outputs.is_fork == 'false'
+        run: |
+          git log --format=%B ${{ github.event.pull_request.base.sha }}..${{ github.event.pull_request.head.sha }} | while read -r line; do
+            if ! echo "$line" | grep -qE '^(feat|fix|docs|style|refactor|test|chore)(\(.+\))?: .+'; then
+              echo "Commit message must follow conventional commits format: type(scope): description"
+              echo "Invalid commit message: $line"
+              exit 1
+            fi
+          done
+
+      - name: Check test coverage
+        if: steps.check-fork.outputs.is_fork == 'false'
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest pytest-cov
+          pytest --cov=task_runner --cov-report=term-missing
+          # You can add coverage thresholds here if needed
