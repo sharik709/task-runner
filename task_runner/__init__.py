@@ -1,25 +1,24 @@
 """
-Task Runner - A powerful yet simple task scheduling and automation tool.
+Task Runner - A powerful yet simple task scheduler and automation tool.
 """
 
-from .core.models import Task
-from .core.database import Database
-from .core.scheduler import TaskScheduler
-from .core.executor import TaskExecutor
-from .utils.config_loader import ConfigLoader
-from .utils.logging import LogManager, LogConfig
-from .plugins.base import PluginManager, BasePlugin, PluginConfig
+from task_runner.core.models import Task, Schedule, RetryConfig
+from task_runner.core.scheduler import TaskScheduler
+from task_runner.core.executor import TaskExecutor
+from task_runner.utils.config_loader import ConfigLoader
+from task_runner.utils.logging import LogManager, LogConfig
 
 __version__ = "0.1.0"
+__author__ = "Your Name"
+__email__ = "your.email@example.com"
+
 __all__ = [
     "Task",
-    "Database",
+    "Schedule",
+    "RetryConfig",
     "TaskScheduler",
     "TaskExecutor",
     "ConfigLoader",
     "LogManager",
     "LogConfig",
-    "PluginManager",
-    "BasePlugin",
-    "PluginConfig",
 ]

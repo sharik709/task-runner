@@ -1,44 +1,28 @@
 tasks:
-  # - name: "daily_backup"
-  #   command: "python /path/to/backup_script.py"
-  #   schedule:
-  #     type: "recurring"
-  #     interval: "1d"
-  #   retry:
-  #     max_attempts: 3
-  #     delay: 300  # 5 minutes
-  #   dependencies: []
-  #   log_level: "INFO"
-
-  # - name: "weekly_report"
-  #   command: "python /path/to/generate_report.py"
-  #   schedule:
-  #     type: "recurring"
-  #     interval: "7d"
-  #   retry:
-  #     max_attempts: 2
-  #     delay: 600  # 10 minutes
-  #   dependencies: ["daily_backup"]
-  #   log_level: "INFO"
-
-  - name: "every_minute_task"
-    command: "echo 'Hello, World From Every Minute Task!'"
+  - name: "daily_backup"
+    command: "python /path/to/backup.py"
     schedule:
       type: "recurring"
-      interval: "1m"
+      interval: "1d"
     retry:
       max_attempts: 3
-      delay: 60 # seconds
-    dependencies: []
-    log_level: "INFO"
+      delay: 300  # 5 minutes
+
+  - name: "weekly_report"
+    command: "python /path/to/generate_report.py"
+    schedule:
+      type: "recurring"
+      interval: "7d"
+    retry:
+      max_attempts: 2
+      delay: 600  # 10 minutes
+    dependencies: ["daily_backup"]
 
   - name: "one_time_task"
-    command: "echo 'Hello, World From One Time Task!'"
+    command: "python /path/to/one_time_script.py"
     schedule:
       type: "one-time"
-      start_time: "2024-04-03T19:35:00"
+      start_time: "2024-03-25T15:00:00"
     retry:
-      max_attempts: 3
-      delay: 60 # seconds
-    dependencies: []
-    log_level: "INFO"
+      max_attempts: 1
+      delay: 300  # 5 minutes

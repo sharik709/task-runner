@@ -6,12 +6,11 @@ A powerful yet simple task runner that helps you schedule and automate tasks wit
 
 - 🕒 **Flexible Scheduling**: Run tasks every minute, hour, day, or year
 - 🔄 **Recurring & One-time Tasks**: Support for both recurring and one-time task execution
-- 🔌 **Plugin System**: Built-in support for MySQL, PostgreSQL, Redis, and HTTP operations
 - 📝 **Smart Logging**: Per-task logging with automatic rotation and cleanup
 - 🔄 **Retry Mechanism**: Automatic retries for failed tasks
 - 🔗 **Task Dependencies**: Tasks can depend on other tasks
-- 🐳 **Docker Ready**: Easy to containerize and deploy
-- ☸️ **Kubernetes Support**: Ready to run in your K8s cluster
+- 🔒 **Secure**: No shell injection vulnerabilities, safe command execution
+- 🎯 **Simple**: Easy to use, yet powerful enough for complex workflows
 
 ## Installation
 
@@ -19,8 +18,8 @@ A powerful yet simple task runner that helps you schedule and automate tasks wit
 # Install from PyPI
 pip install task-runner
 
-# Or install with all optional dependencies
-pip install "task-runner[all]"
+# For development, install with all dev dependencies
+pip install "task-runner[dev]"
 ```
 
 ## Quick Start
@@ -39,13 +38,6 @@ tasks:
     retry:
       max_attempts: 3
       delay: 300  # 5 minutes
-    plugins:
-      - name: "mysql"
-        config:
-          host: "localhost"
-          port: 3306
-          user: "backup_user"
-          database: "my_db"
 ```
 
 ### 2. Run the Task Runner
@@ -63,9 +55,10 @@ python -m task_runner
 ```python
 from task_runner import TaskScheduler, ConfigLoader, LogManager, LogConfig
 
-# Initialize components
+# Initialize components with custom log directory (optional)
+config = LogConfig(log_dir="/path/to/logs")  # Default: ~/.task_runner/logs
+log_manager = LogManager(config)
 config_loader = ConfigLoader()
-log_manager = LogManager(LogConfig())
 scheduler = TaskScheduler()
 
 # Load and schedule tasks
@@ -93,15 +86,8 @@ tasks:
       start_time: "2024-03-25T15:00:00"  # for one-time tasks
     retry:
       max_attempts: 3
-      delay: 300
+      delay: 300  # seconds
     dependencies: ["other_task"]  # Optional dependencies
-    plugins:  # Optional plugins
-      - name: "mysql"
-        config:
-          host: "localhost"
-          port: 3306
-          user: "user"
-          database: "db"
 ```
 
 ### Schedule Types
@@ -114,59 +100,12 @@ tasks:
   - `start_time`: ISO format datetime
   - Example: `start_time: "2024-03-25T15:00:00"`
 
-### Available Plugins
-
-#### MySQL Plugin
-```yaml
-plugins:
-  - name: "mysql"
-    config:
-      host: "localhost"
-      port: 3306
-      user: "user"
-      password: "password"
-      database: "db"
-```
-
-#### PostgreSQL Plugin
-```yaml
-plugins:
-  - name: "postgres"
-    config:
-      host: "localhost"
-      port: 5432
-      user: "user"
-      password: "password"
-      database: "db"
-```
-
-#### Redis Plugin
-```yaml
-plugins:
-  - name: "redis"
-    config:
-      host: "localhost"
-      port: 6379
-      password: "password"
-      db: 0
-```
-
-#### HTTP Plugin
-```yaml
-plugins:
-  - name: "http"
-    config:
-      base_url: "https://api.example.com"
-      headers:
-        Authorization: "Bearer token"
-```
-
 ## Logging System
 
 Logs are automatically organized by task and invocation:
 
 ```
-logs/
+~/.task_runner/logs/
 ├── daily_backup/
 │   ├── invocation_20240325_150000.log
 │   └── invocation_20240326_150000.log
@@ -178,61 +117,45 @@ logs/
 Features:
 - Per-task logging directories
 - Per-invocation log files
-- Automatic log rotation and compression
-- Configurable retention policy
+- Automatic log rotation and cleanup
+- Configurable log directory
+- Default max of 10 log files per task
 
-## Deployment
+## Security Features
 
-### Docker
-
-```bash
-# Build the image
-docker build -t task-runner .
-
-# Run the container
-docker run -d \
-  -v /path/to/config:/app/config \
-  -v /path/to/logs:/app/logs \
-  task-runner
-```
-
-### Kubernetes
-
-1. Apply the Kubernetes manifests:
-```bash
-kubectl apply -f k8s/
-```
-
-2. Configure your tasks in the ConfigMap:
-```bash
-kubectl edit configmap task-runner-config
-```
-
-3. Monitor the deployment:
-```bash
-kubectl logs -f deployment/task-runner
-```
+- Command execution is done safely without shell injection vulnerabilities
+- All file operations use secure paths
+- Log files are created with appropriate permissions
+- No sensitive data is stored in logs
+- Input validation for all configuration files
 
 ## Development
 
-### Project Structure
-```
-task_runner/
-├── core/           # Core functionality
-├── plugins/        # Plugin implementations
-│   ├── mysql/
-│   ├── postgres/
-│   ├── redis/
-│   └── http/
-└── utils/          # Utility functions
+### Running Tests
+
+```bash
+# Install dev dependencies
+pip install "task-runner[dev]"
+
+# Run tests
+pytest
+
+# Run tests with coverage
+pytest --cov=task_runner
 ```
 
-### Adding New Plugins
+### Code Style
 
-1. Create a new plugin class in `plugins/your_plugin/plugin.py`
-2. Inherit from `BasePlugin`
-3. Implement required methods
-4. Register the plugin in `setup.py`
+```bash
+# Format code
+black task_runner tests
+
+# Sort imports
+isort task_runner tests
+
+# Type checking
+mypy task_runner
+```
 
 ## Contributing
 

@@ -1,60 +1,51 @@
-import os
+import argparse
 import sys
-from loguru import logger
-from models.database import Database
-from utils.config_loader import ConfigLoader
-from scheduler.task_scheduler import TaskScheduler, Task
-
-def setup_logging():
-    """Setup logging configuration"""
-    # Remove default logger
-    logger.remove()
-
-    # Add console logger
-    logger.add(
-        sys.stderr,
-        format="<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <level>{level: <8}</level> | <cyan>{name}</cyan>:<cyan>{function}</cyan>:<cyan>{line}</cyan> - <level>{message}</level>",
-        level="INFO"
-    )
-
-    # Add file logger
-    os.makedirs("logs", exist_ok=True)
-    logger.add(
-        "logs/task_runner.log",
-        rotation="1 day",
-        retention="7 days",
-        level="DEBUG"
-    )
+from pathlib import Path
+from task_runner import TaskScheduler, ConfigLoader, LogManager, LogConfig
 
 def main():
-    """Main entry point"""
-    # Setup logging
-    setup_logging()
-    logger.info("Starting Task Runner")
+    parser = argparse.ArgumentParser(description="Task Runner - A powerful yet simple task scheduler")
+    parser.add_argument(
+        "--config-dir",
+        default="config",
+        help="Directory containing task configuration files (default: config)"
+    )
+    parser.add_argument(
+        "--log-dir",
+        help="Directory for log files (default: ~/.task_runner/logs)"
+    )
+    parser.add_argument(
+        "--max-log-files",
+        type=int,
+        default=10,
+        help="Maximum number of log files to keep per task (default: 10)"
+    )
+
+    args = parser.parse_args()
 
     try:
-        # Initialize database
-        db = Database.get_instance()
-        db.init_db()
+        # Initialize components
+        log_config = LogConfig(log_dir=args.log_dir, max_files=args.max_log_files)
+        log_manager = LogManager(log_config)
+        config_loader = ConfigLoader(args.config_dir)
+        scheduler = TaskScheduler(log_manager)
 
-        # Load and sync tasks from config
-        config_loader = ConfigLoader()
-        config_loader.sync_tasks()
-
-        # Initialize and run scheduler
-        scheduler = TaskScheduler()
-
-        # Load tasks from database and schedule them
-        session = db.session
-        tasks = session.query(Task).filter_by(is_active=True).all()
+        # Load and schedule tasks
+        tasks = config_loader.load_configs()
         for task in tasks:
             scheduler.schedule_task(task)
+
+        print(f"Loaded {len(tasks)} tasks from {args.config_dir}")
+        print("Task Runner is running. Press Ctrl+C to stop.")
 
         # Run the scheduler
         scheduler.run()
 
+    except KeyboardInterrupt:
+        print("\nShutting down Task Runner...")
+        sys.exit(0)
     except Exception as e:
-        logger.exception(f"Fatal error: {str(e)}")
+        print(f"Error: {str(e)}", file=sys.stderr)
         sys.exit(1)
 
 if __name__ == "__main__":
