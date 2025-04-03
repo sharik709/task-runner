@@ -32,7 +32,7 @@ class MySQLPlugin(BasePlugin):
         if not MYSQL_AVAILABLE:
             raise ImportError(
                 "mysql-connector-python package is required for MySQL support. "
-                "Install it with 'pip install task-processor[mysql]'"
+                "Install it with 'pip install task-runner[mysql]'"
             )
         super().__init__(config)
         self._connection = None

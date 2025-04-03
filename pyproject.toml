@@ -4,12 +4,12 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "taskops"
-version = "0.1.6"
+version = "0.1.7"
 description = "A flexible task scheduling and execution framework"
 readme = "README.md"
 license = { text = "MIT" }
 authors = [
-    { name = "Sharik Shaikh", email = "sharik709@gmail.com" }
+    { name = "Sharik Shaikh", email = "shaikhsharik709@gmail.com" }
 ]
 dependencies = [
     "pydantic>=2.0.0",
@@ -35,8 +35,8 @@ classifiers = [
 keywords = ["task", "scheduler", "automation", "process"]
 
 [project.urls]
-Homepage = "https://github.com/sharik709/task-processor"
-Issues = "https://github.com/sharik709/task-processor/issues"
+Homepage = "https://github.com/sharik709/task-runner/"
+Issues = "https://github.com/sharik709/task-runner/issues"
 
 [project.scripts]
 taskops = "task_processor.__main__:main"

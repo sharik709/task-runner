@@ -6,8 +6,8 @@ Thank you for your interest in contributing to Task Processor! This document pro
 
 1. Fork the repository:
    ```bash
-   git clone https://github.com/sharik709/task-processor.git
-   cd task-processor
+   git clone https://github.com/sharik709/task-runner.git
+   cd task-runner
    ```
 
 2. Create a virtual environment and activate it:
@@ -85,11 +85,11 @@ Make sure all tests pass and maintain or improve the test coverage before submit
 4. Build and publish to PyPI:
    ```bash
    python -m build
-   python -m twine upload --repository-url https://test.pypi.org/legacy/ dist/*
+   python -m twine upload dist/*
    ```
 
 ## Questions?
 
 If you have any questions, please open an issue or contact the maintainers.
 
-Thank you for contributing to Task Processor!
+Thank you for contributing to TaskOps!

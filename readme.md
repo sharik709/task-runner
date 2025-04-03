@@ -15,7 +15,7 @@ A flexible and extensible task processing system that allows you to schedule, ex
 
 ### From GitHub (Recommended)
 ```bash
-pip install git+https://github.com/sharik709/task-processor.git
+pip install git+https://github.com/sharik709//task-runner.git
 ```
 
 ### From TestPyPI
@@ -146,8 +146,8 @@ For a complete working example, see [example_taskops.py](example_taskops.py).
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/sharik709/task-processor.git
-cd task-processor
+git clone https://github.com/sharik709//task-runner.git
+cd task-runner
 ```
 
 2. Create and activate a virtual environment:

@@ -5,13 +5,13 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setup(
     name="taskops",
-    version="0.1.6",
+    version="0.1.7",
     author="Sharik Shaikh",
     author_email="shaikhsharik709@gmail.com",
     description="A powerful yet simple task processor for scheduling and automating tasks",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/sharik709/task-processor",
+    url="https://github.com/sharik709/task-runner",
     packages=find_packages(),
     classifiers=[
         "Development Status :: 4 - Beta",
